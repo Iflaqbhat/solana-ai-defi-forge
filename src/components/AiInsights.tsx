@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, TrendingUp, AlertTriangle, ArrowRight } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const insights = [
   {
@@ -47,10 +48,26 @@ const insights = [
 
 const AiInsights = () => {
   const [currentTab, setCurrentTab] = useState("all");
+  const { toast } = useToast();
   
   const filteredInsights = currentTab === "all" 
     ? insights 
     : insights.filter(insight => insight.type === currentTab);
+
+  const handleViewAll = () => {
+    toast({
+      title: "View All Insights",
+      description: "Detailed insights dashboard will be available in the next update!",
+    });
+  };
+
+  const handleInsightClick = (insight: any) => {
+    toast({
+      title: "Insight Details",
+      description: `Viewing details for: ${insight.title}`,
+      variant: insight.type === 'risk' ? 'destructive' : 'default',
+    });
+  };
 
   return (
     <Card className="border border-border/50">
@@ -79,7 +96,11 @@ const AiInsights = () => {
           <TabsContent value={currentTab} className="mt-0">
             <div className="space-y-4">
               {filteredInsights.map((insight) => (
-                <Card key={insight.id} className="bg-muted border-none overflow-hidden">
+                <Card 
+                  key={insight.id} 
+                  className="bg-muted border-none overflow-hidden cursor-pointer hover:bg-muted/80 transition-colors"
+                  onClick={() => handleInsightClick(insight)}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
                       <div className={`mt-1 p-1.5 rounded-full flex-shrink-0 
@@ -122,7 +143,7 @@ const AiInsights = () => {
           <span className="text-xs text-muted-foreground">
             Powered by AI analysis of on-chain data and market metrics
           </span>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={handleViewAll}>
             View All <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
         </div>

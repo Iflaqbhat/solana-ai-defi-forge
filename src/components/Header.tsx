@@ -1,16 +1,33 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Wallet, Coins, Info, Menu } from "lucide-react";
+import { Wallet, Coins, Info, Menu, X } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const Header = () => {
   const { toast } = useToast();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleConnectWallet = () => {
     toast({
       title: "Wallet Connection",
       description: "Wallet integration coming soon! Stay tuned for the full implementation.",
+    });
+  };
+
+  const handleNavigation = (destination: string) => {
+    toast({
+      title: "Navigation",
+      description: `Navigating to ${destination} page. This feature is coming soon!`,
+    });
+  };
+
+  const handleAiInsights = () => {
+    toast({
+      title: "AI Insights",
+      description: "Detailed AI market analysis coming in the next update!",
+      variant: "default",
     });
   };
 
@@ -25,16 +42,32 @@ const Header = () => {
         </div>
         
         <div className="hidden md:flex items-center space-x-4">
-          <Button variant="ghost" className="text-foreground/80 hover:text-foreground">
+          <Button 
+            variant="ghost" 
+            className="text-foreground/80 hover:text-foreground"
+            onClick={() => handleNavigation('Dashboard')}
+          >
             Dashboard
           </Button>
-          <Button variant="ghost" className="text-foreground/80 hover:text-foreground">
+          <Button 
+            variant="ghost" 
+            className="text-foreground/80 hover:text-foreground"
+            onClick={() => handleNavigation('Portfolio')}
+          >
             Portfolio
           </Button>
-          <Button variant="ghost" className="text-foreground/80 hover:text-foreground">
+          <Button 
+            variant="ghost" 
+            className="text-foreground/80 hover:text-foreground"
+            onClick={() => handleNavigation('Market')}
+          >
             Market
           </Button>
-          <Button variant="ghost" className="text-foreground/80 hover:text-foreground">
+          <Button 
+            variant="ghost" 
+            className="text-foreground/80 hover:text-foreground"
+            onClick={() => handleNavigation('AI Assistant')}
+          >
             AI Assistant
           </Button>
         </div>
@@ -43,12 +76,7 @@ const Header = () => {
           <Button 
             variant="outline" 
             className="border-solana border-opacity-50 hidden sm:flex"
-            onClick={() => {
-              toast({
-                title: "Coming Soon",
-                description: "AI insights feature will be available in the next update!",
-              });
-            }}
+            onClick={handleAiInsights}
           >
             <Info className="mr-2 h-4 w-4" />
             <span>AI Insights</span>
@@ -63,9 +91,68 @@ const Header = () => {
             <span className="sm:hidden">Connect</span>
           </Button>
           
-          <Button variant="ghost" className="md:hidden" size="icon">
-            <Menu className="h-5 w-5" />
-          </Button>
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" className="md:hidden" size="icon">
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[240px] sm:w-[300px]">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <div className="py-4 flex flex-col space-y-3">
+                <Button 
+                  variant="ghost" 
+                  className="justify-start"
+                  onClick={() => {
+                    handleNavigation('Dashboard');
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Dashboard
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="justify-start"
+                  onClick={() => {
+                    handleNavigation('Portfolio');
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Portfolio
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="justify-start"
+                  onClick={() => {
+                    handleNavigation('Market');
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Market
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="justify-start"
+                  onClick={() => {
+                    handleNavigation('AI Assistant');
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  AI Assistant
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="justify-start mt-4"
+                  onClick={handleAiInsights}
+                >
+                  <Info className="mr-2 h-4 w-4" />
+                  AI Insights
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

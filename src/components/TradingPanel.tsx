@@ -27,16 +27,59 @@ const TradingPanel = () => {
   const [slippage, setSlippage] = useState(0.5);
   const [useAi, setUseAi] = useState(true);
   const [amount, setAmount] = useState("");
+  const [activeTab, setActiveTab] = useState("swap");
 
   const handleTokenSwap = () => {
+    const temp = fromToken;
     setFromToken(toToken);
-    setToToken(fromToken);
+    setToToken(temp);
+    toast({
+      title: "Tokens Swapped",
+      description: `Swapped from ${toToken} to ${fromToken}`,
+    });
   };
 
   const handleTradeSubmit = () => {
+    if (!amount || Number(amount) <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid amount to trade.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     toast({
       title: "Trade Simulation",
-      description: "In the full version, this would execute a real trade on Solana. Currently in demo mode.",
+      description: `Simulated ${amount} ${fromToken} to ${toToken} swap executed successfully.`,
+      variant: "default",
+    });
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    if (value === "limit") {
+      toast({
+        title: "Limit Orders",
+        description: "Limit order functionality will be available in the next update!",
+      });
+    }
+  };
+
+  const handleAiToggle = (checked: boolean) => {
+    setUseAi(checked);
+    toast({
+      title: checked ? "AI Optimization Enabled" : "AI Optimization Disabled",
+      description: checked 
+        ? "AI will now optimize your trades for better execution." 
+        : "Standard trading routes will be used for your trades.",
+    });
+  };
+
+  const handleJupiterClick = () => {
+    toast({
+      title: "Jupiter Aggregator",
+      description: "Connecting to Jupiter for optimal routing and execution.",
     });
   };
 
@@ -47,7 +90,7 @@ const TradingPanel = () => {
         <CardDescription>Execute trades with AI-optimized routing</CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="swap">
+        <Tabs defaultValue="swap" value={activeTab} onValueChange={handleTabChange}>
           <TabsList className="grid grid-cols-2 mb-4">
             <TabsTrigger value="swap">Swap</TabsTrigger>
             <TabsTrigger value="limit">Limit Order</TabsTrigger>
@@ -82,7 +125,7 @@ const TradingPanel = () => {
                   variant="ghost" 
                   size="icon" 
                   onClick={handleTokenSwap}
-                  className="rounded-full h-8 w-8 bg-muted"
+                  className="rounded-full h-8 w-8 bg-muted hover:bg-muted/80"
                 >
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3.5 5.5L7.5 1.5M7.5 1.5L11.5 5.5M7.5 1.5V13.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
@@ -103,7 +146,7 @@ const TradingPanel = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <Input type="number" placeholder="0.00" readOnly value={amount ? Number(amount) * 1.25 : ""} />
+                  <Input type="number" placeholder="0.00" readOnly value={amount ? (Number(amount) * 1.25).toFixed(2) : ""} />
                 </div>
               </div>
 
@@ -120,7 +163,12 @@ const TradingPanel = () => {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Route</span>
-                      <span className="text-secondary">Jupiter Aggregator ↗</span>
+                      <span 
+                        className="text-secondary cursor-pointer hover:underline"
+                        onClick={handleJupiterClick}
+                      >
+                        Jupiter Aggregator ↗
+                      </span>
                     </div>
                     {useAi && (
                       <div className="flex justify-between text-sm">
@@ -150,7 +198,7 @@ const TradingPanel = () => {
               </div>
 
               <div className="flex items-center space-x-2">
-                <Switch id="useAi" checked={useAi} onCheckedChange={setUseAi} />
+                <Switch id="useAi" checked={useAi} onCheckedChange={handleAiToggle} />
                 <Label htmlFor="useAi" className="text-sm">Use AI for trade optimization</Label>
               </div>
             </div>
