@@ -4,22 +4,17 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Wallet, Coins, Info, Menu, X } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
   const { toast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   const handleConnectWallet = () => {
     toast({
       title: "Wallet Connection",
       description: "Wallet integration coming soon! Stay tuned for the full implementation.",
-    });
-  };
-
-  const handleNavigation = (destination: string) => {
-    toast({
-      title: "Navigation",
-      description: `Navigating to ${destination} page. This feature is coming soon!`,
     });
   };
 
@@ -31,44 +26,50 @@ const Header = () => {
     });
   };
 
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
     <header className="bg-card/50 backdrop-blur-md border-b border-border sticky top-0 z-50 w-full">
       <div className="container mx-auto flex justify-between items-center h-16 px-4">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-full bg-solana-gradient flex items-center justify-center">
-            <Coins className="w-5 h-5 text-white" />
-          </div>
-          <span className="font-bold text-lg solana-gradient-text">SolanaAI DeFi Forge</span>
+          <Link to="/dashboard" className="flex items-center space-x-2">
+            <div className="w-8 h-8 rounded-full bg-solana-gradient flex items-center justify-center">
+              <Coins className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-lg solana-gradient-text">SolanaAI DeFi Forge</span>
+          </Link>
         </div>
         
         <div className="hidden md:flex items-center space-x-4">
           <Button 
-            variant="ghost" 
-            className="text-foreground/80 hover:text-foreground"
-            onClick={() => handleNavigation('Dashboard')}
+            variant={isActive("/dashboard") ? "default" : "ghost"} 
+            className={isActive("/dashboard") ? "bg-muted" : "text-foreground/80 hover:text-foreground"}
+            asChild
           >
-            Dashboard
+            <Link to="/dashboard">Dashboard</Link>
           </Button>
           <Button 
-            variant="ghost" 
-            className="text-foreground/80 hover:text-foreground"
-            onClick={() => handleNavigation('Portfolio')}
+            variant={isActive("/portfolio") ? "default" : "ghost"} 
+            className={isActive("/portfolio") ? "bg-muted" : "text-foreground/80 hover:text-foreground"}
+            asChild
           >
-            Portfolio
+            <Link to="/portfolio">Portfolio</Link>
           </Button>
           <Button 
-            variant="ghost" 
-            className="text-foreground/80 hover:text-foreground"
-            onClick={() => handleNavigation('Market')}
+            variant={isActive("/market") ? "default" : "ghost"} 
+            className={isActive("/market") ? "bg-muted" : "text-foreground/80 hover:text-foreground"}
+            asChild
           >
-            Market
+            <Link to="/market">Market</Link>
           </Button>
           <Button 
-            variant="ghost" 
-            className="text-foreground/80 hover:text-foreground"
-            onClick={() => handleNavigation('AI Assistant')}
+            variant={isActive("/ai-assistant") ? "default" : "ghost"} 
+            className={isActive("/ai-assistant") ? "bg-muted" : "text-foreground/80 hover:text-foreground"}
+            asChild
           >
-            AI Assistant
+            <Link to="/ai-assistant">AI Assistant</Link>
           </Button>
         </div>
 
@@ -103,49 +104,44 @@ const Header = () => {
               </SheetHeader>
               <div className="py-4 flex flex-col space-y-3">
                 <Button 
-                  variant="ghost" 
+                  variant={isActive("/dashboard") ? "default" : "ghost"} 
                   className="justify-start"
-                  onClick={() => {
-                    handleNavigation('Dashboard');
-                    setMobileMenuOpen(false);
-                  }}
+                  asChild
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  Dashboard
+                  <Link to="/dashboard">Dashboard</Link>
                 </Button>
                 <Button 
-                  variant="ghost" 
+                  variant={isActive("/portfolio") ? "default" : "ghost"} 
                   className="justify-start"
-                  onClick={() => {
-                    handleNavigation('Portfolio');
-                    setMobileMenuOpen(false);
-                  }}
+                  asChild
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  Portfolio
+                  <Link to="/portfolio">Portfolio</Link>
                 </Button>
                 <Button 
-                  variant="ghost" 
+                  variant={isActive("/market") ? "default" : "ghost"} 
                   className="justify-start"
-                  onClick={() => {
-                    handleNavigation('Market');
-                    setMobileMenuOpen(false);
-                  }}
+                  asChild
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  Market
+                  <Link to="/market">Market</Link>
                 </Button>
                 <Button 
-                  variant="ghost" 
+                  variant={isActive("/ai-assistant") ? "default" : "ghost"} 
                   className="justify-start"
-                  onClick={() => {
-                    handleNavigation('AI Assistant');
-                    setMobileMenuOpen(false);
-                  }}
+                  asChild
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  AI Assistant
+                  <Link to="/ai-assistant">AI Assistant</Link>
                 </Button>
                 <Button 
                   variant="outline" 
                   className="justify-start mt-4"
-                  onClick={handleAiInsights}
+                  onClick={() => {
+                    handleAiInsights();
+                    setMobileMenuOpen(false);
+                  }}
                 >
                   <Info className="mr-2 h-4 w-4" />
                   AI Insights
